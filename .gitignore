@@ -12,7 +12,7 @@ frontend.pnp.js
 /build
 
 #python virtual environment
-/env
+env
 
 # misc
 .DS_Store
