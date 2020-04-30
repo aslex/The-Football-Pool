@@ -1,11 +1,11 @@
-import React from 'react'
+import React from "react";
 
 function Picks() {
-    return (
-        <div>
-            
-        </div>
-    )
+  return (
+    <div>
+      <h4>review or submit your picks</h4>
+    </div>
+  );
 }
 
-export default Picks
+export default Picks;

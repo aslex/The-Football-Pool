@@ -12,7 +12,11 @@ frontend.pnp.js
 /build
 
 #python virtual environment
-env
+virtual-env
+
+
+#auth0
+frontend/src/auth_config.json
 
 # misc
 .DS_Store

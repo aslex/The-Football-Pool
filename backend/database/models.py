@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 import os
 from sqlalchemy import Column, Integer, String
+import json
 
 database_filename = 'database.db'
 project_dir = os.path.dirname(os.path.abspath(__file__))
