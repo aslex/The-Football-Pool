@@ -7,16 +7,14 @@ from werkzeug import exceptions
 from werkzeug.exceptions import HTTPException
 from flask_cors import CORS
 from .auth.auth import requires_auth_permission
-from .database.models import setup_db, create_all, User
+from .database.models import setup_db, drop_and_create_all, User, Game, Week
 
 app = Flask(__name__)
-
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 setup_db(app)
 # CORS(app)
-create_all()
-
+drop_and_create_all()
 
 @app.errorhandler(HTTPException)
 def handle_exception(e):
@@ -42,8 +40,8 @@ def handle_exception(e):
 @requires_auth_permission('post:pics')
 def submit_picks(permission):
     # unpack request header
-    token = get_token_auth_header()
-    payload = verify_decode_jwt(token)
+    # token = get_token_auth_header()
+    # payload = verify_decode_jwt(token)
 
     print('user : ', payload["sub"])
     if request.method == 'POST':

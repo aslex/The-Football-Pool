@@ -5,15 +5,13 @@ import { Route, Switch, Link } from "react-router-dom";
 import Overview from "./components/Overview";
 import Picks from "./components/Picks";
 import { useEffect, useState } from "react";
-import createAuth0Client from "@auth0/auth0-spa-js";
+
 import Navbar from "./components/Navbar";
 import { useAuth0 } from "./react-auth0-spa";
 
-
 function App() {
-
-
-  const { loading } = useAuth0();
+  const { user, loading } = useAuth0();
+  console.log("user?", user);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -22,16 +20,6 @@ function App() {
     <div className="App">
       <header>
         <h2>The Football Pool</h2>
-        {/* <a href="https://the-football-pool.eu.auth0.com/authorize?audience=fbpool&response_type=token&client_id=0iNaLqH6uT9Q22PSgTKgnz8Lv7d1N5T7&redirect_uri=http://localhost:3000/picks">
-          <h5>Login or Create an Account</h5>
-          <h5>Submit picks</h5>
-        </a> */}
-        {/* <button id="login" className="navbar" onClick={login}>
-          Login
-        </button>
-        <button id="logout" className="navbar" onClick={() => auth0.logout()}>
-          Logout
-        </button> */}
         <Navbar />
       </header>
       <Overview />

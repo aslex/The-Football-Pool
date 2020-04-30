@@ -1,4 +1,8 @@
+from flask import request, abort, _request_ctx_stack
 from urllib.request import urlopen
+from functools import wraps
+from werkzeug import exceptions
+from jose import jwt
 
 AUTH0_DOMAIN = 'the-football-pool.eu.auth0.com'
 ALGORITHMS = ['RS256']
@@ -48,16 +52,19 @@ def verify_decode_jwt(token):
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
     print('urlopen working')
     jwks = json.loads(jsonurl.read())
+    print('jwks here: ')
     unverified_header = jwt.get_unverified_header(token)
     rsa_key = {}
 
     if 'kid' not in unverified_header:
+        print('kid not in header')
         raise AuthError({
             'code': 'invalid_header',
             'description': 'Authorization malformed.'
         }, 401)
 
     for key in jwks['keys']:
+        print('key in jwks')
         if key['kid'] == unverified_header['kid']:
             rsa_key = {
                 'kty': key['kty'],
@@ -90,11 +97,13 @@ def verify_decode_jwt(token):
             }, 401)
 
         except jwt.JWTClaimsError:
+            print('cliams error')
             raise AuthError({
                 'code': 'invalid_claims',
                 'description': 'Incorrect claims. Please, check the audience and issuer.'
             }, 401)
         except Exception:
+            print('except exception?')
             raise AuthError({
                 'code': 'invalid_header',
                 'description': 'Unable to parse authentication token.'
@@ -130,8 +139,10 @@ def requires_auth_permission(permission=''):
                 # print('getting payload')
                 payload = verify_decode_jwt(token)
             except:
+                print('except in wrapper')
                 abort(401)
 
+            print('checking permissions')
             check_permissions(permission, payload)
             
             return f(payload, *args, **kwargs)
