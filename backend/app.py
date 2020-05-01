@@ -8,6 +8,11 @@ from werkzeug.exceptions import HTTPException
 from flask_cors import CORS
 from .auth.auth import requires_auth_permission
 from .database.models import setup_db, drop_and_create_all, User, Game, Week
+import requests
+from datetime import date
+import xmltodict
+import json
+from urllib.request import urlopen
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
@@ -31,10 +36,20 @@ def handle_exception(e):
     return response
 
 
-# @app.route('/', methods=['GET'])
-# def home_page():
-#     return 'welcome !'
+@app.route('/', methods=['GET'])
+def get_current_nfl_week():
+    res = requests.get('http://www.nfl.com/ajax/scorestrip?season=2019&seasonType=REG&week=2', headers = {'user-agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"})
 
+    print('raw res:', res.text)
+    res_parse = xmltodict.parse(res.text)
+    res_json = json.dumps(res_parse)
+    return res_json
+    # if res.status_code != 200:
+    #     return f'error: {res.status_code}'
+    today = date.today()
+    year = today.strftime("%Y")
+    month = today.strftime("%m")
+    return f'year, month'
 
 @app.route('/picks', methods=['GET', 'POST', 'PATCH'])
 @requires_auth_permission('post:pics')
@@ -49,3 +64,4 @@ def submit_picks(permission):
     elif request.method == 'GET':
         print('show submitted picks')
     return 'submit your picks'
+
