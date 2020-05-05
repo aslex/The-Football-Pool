@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { BrowserRouter } from "react-router-dom";
+import { Router } from "react-router-dom";
 import { Auth0Provider } from "./react-auth0-spa";
 import config from "./auth_config.json";
 import history from "./utils/history";
@@ -18,16 +18,18 @@ const onRedirectCallback = (appState) => {
 
 ReactDOM.render(
   <React.StrictMode>
-    <Auth0Provider
-      domain={config.domain}
-      client_id={config.clientId}
-      redirect_uri={window.location.origin}
-      onRedirectCallback={onRedirectCallback}
-    >
-      <BrowserRouter>
+      <Auth0Provider
+        domain={config.domain}
+        client_id={config.clientId}
+        scope={config.scope}
+        redirect_uri={window.location.origin}
+        audience={config.audience}
+        onRedirectCallback={onRedirectCallback}
+      >
+    <Router history={history}>
         <App />
-      </BrowserRouter>
-    </Auth0Provider>
+    </Router>
+      </Auth0Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

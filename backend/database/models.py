@@ -27,11 +27,21 @@ class User(db.Model):
     __tablename__='users'
     id = Column(Integer, primary_key=True)
     nickname = Column(String, unique=True)
-
+    
+    totals = relationship('Total', backref='user')
     picks = relationship('Pick', backref='user')
 
     def __repr__(self):
         return f'<User  id={id} nickname={nickname} >'
+
+class Total(db.Model):
+    __tablename__= 'season totals'
+    user_id = Column(Integer, ForeignKey('users.id'))
+    season = Column(Integer)
+    value = Column(Integer)
+
+    def __repr__(self):
+        return f'<Total  user_id={user_id} season={season} value={value} >'
 
 class Pick(db.Model):
     __tablename__='picks'

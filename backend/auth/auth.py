@@ -3,6 +3,7 @@ from urllib.request import urlopen
 from functools import wraps
 from werkzeug import exceptions
 from jose import jwt
+import json
 
 AUTH0_DOMAIN = 'the-football-pool.eu.auth0.com'
 ALGORITHMS = ['RS256']
@@ -19,6 +20,7 @@ def get_token_auth_header():
     """Obtains the Access Token from the Authorization Header
     """
     auth = request.headers.get('Authorization', None)
+
     if not auth:
         raise AuthError({
             'code': 'authorization_header_missing',
@@ -50,9 +52,7 @@ def get_token_auth_header():
 
 def verify_decode_jwt(token):
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
-    print('urlopen working')
     jwks = json.loads(jsonurl.read())
-    print('jwks here: ')
     unverified_header = jwt.get_unverified_header(token)
     rsa_key = {}
 
@@ -64,7 +64,7 @@ def verify_decode_jwt(token):
         }, 401)
 
     for key in jwks['keys']:
-        print('key in jwks')
+
         if key['kid'] == unverified_header['kid']:
             rsa_key = {
                 'kty': key['kty'],
@@ -136,7 +136,6 @@ def requires_auth_permission(permission=''):
         def wrapper(*args, **kwargs):
             token = get_token_auth_header()
             try:
-                # print('getting payload')
                 payload = verify_decode_jwt(token)
             except:
                 print('except in wrapper')

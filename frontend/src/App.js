@@ -1,32 +1,36 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import { Route, Switch, Link } from "react-router-dom";
+import { Router, Switch, Link } from "react-router-dom";
 import Overview from "./components/Overview";
 import Picks from "./components/Picks";
+import Settings from "./components/Settings";
 import { useEffect, useState } from "react";
+
 
 import Navbar from "./components/Navbar";
 import { useAuth0 } from "./react-auth0-spa";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   const { user, loading } = useAuth0();
-  console.log("user?", user);
 
   if (loading) {
     return <div>Loading...</div>;
   }
   return (
+    
     <div className="App">
       <header>
         <h2>The Football Pool</h2>
         <Navbar />
       </header>
+
       <Overview />
-
-      {/* should only be able to access if logged in */}
-
-      <Route path="/picks" component={Picks} />
+      <Switch>
+        <PrivateRoute path="/picks" component={Picks} />
+        <PrivateRoute path="/settings" component={Settings} />
+      </Switch>
     </div>
   );
 }

@@ -15,7 +15,7 @@ import json
 from urllib.request import urlopen
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"/*": {"origins": "*"}})
+cors = CORS(app, resources={r"/*": {"origins": "localhost:3000"}})
 
 setup_db(app)
 # CORS(app)
@@ -37,8 +37,12 @@ def handle_exception(e):
 
 
 @app.route('/', methods=['GET'])
-def get_current_nfl_week():
-    res = requests.get('http://www.nfl.com/ajax/scorestrip?season=2019&seasonType=REG&week=2', headers = {'user-agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"})
+def get_current_scores():
+    # DEPRECATED !  DO NOT USE
+    # res = requests.get('http://www.nfl.com/ajax/scorestrip?season=2019&seasonType=REG&week=2', headers = {'user-agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"})
+
+    res = requests.get('https://feeds.nfl.com/feeds-rs/scores.json')
+    return res.json()
 
     print('raw res:', res.text)
     res_parse = xmltodict.parse(res.text)
@@ -50,6 +54,24 @@ def get_current_nfl_week():
     year = today.strftime("%Y")
     month = today.strftime("%m")
     return f'year, month'
+
+@app.route('/users/<id>', methods=['PATCH'])
+@requires_auth_permission(permission='post:pics')
+def update_nickname(payload, id, permission='post:pics'):
+    print(f'id ? {id}')
+    print(f'permissions ?', {permission})
+    print(f'payload ? {payload}')
+
+    user = User.query.filter_by(id = payload.sub.id)
+    if not user:
+        abort(404)
+    else:
+        try:
+            user.update()
+
+        except:
+
+    return json.dumps({'message':'nickname has been updated' })
 
 @app.route('/picks', methods=['GET', 'POST', 'PATCH'])
 @requires_auth_permission('post:pics')
