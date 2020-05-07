@@ -41,6 +41,8 @@ def get_current_scores():
     # DEPRECATED !  DO NOT USE
     # res = requests.get('http://www.nfl.com/ajax/scorestrip?season=2019&seasonType=REG&week=2', headers = {'user-agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"})
 
+    # request schema : http://www.nfl.com/feeds-rs?_wadl
+
     res = requests.get('https://feeds.nfl.com/feeds-rs/scores.json')
     return res.json()
 
@@ -56,8 +58,8 @@ def get_current_scores():
     return f'year, month'
 
 @app.route('/users/<id>', methods=['PATCH'])
-@requires_auth_permission(permission='post:pics')
-def update_nickname(payload, id, permission='post:pics'):
+@requires_auth_permission(permission='post:picks')
+def update_nickname(payload, id, permission='post:picks'):
     print(f'id ? {id}')
     print(f'permissions ?', {permission})
     print(f'payload ? {payload}')
@@ -74,7 +76,7 @@ def update_nickname(payload, id, permission='post:pics'):
     return json.dumps({'message':'nickname has been updated' })
 
 @app.route('/picks', methods=['GET', 'POST', 'PATCH'])
-@requires_auth_permission('post:pics')
+@requires_auth_permission('post:picks')
 def submit_picks(permission):
     # unpack request header
     # token = get_token_auth_header()

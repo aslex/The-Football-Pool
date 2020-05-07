@@ -38,8 +38,7 @@
   }
 }
 
-#pop-up {
-  width: 400px;
-  height: 400px;
-  display: none;
+.active{
+  background-color: #61dafb;
+  
 }
