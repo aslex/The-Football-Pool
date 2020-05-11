@@ -22,7 +22,7 @@ function Picks() {
       .map((el) => el.weekName)
       .filter(filterUniqueWeeks);
     setPlayoffWeeks(playoffWeekButtons);
-  }, [postSeasonGames]);
+  }, [regSeasonGames]);
 
   // fetch nfl api to generate weekly forms
   const getSeason = async (e) => {
@@ -37,7 +37,7 @@ function Picks() {
       return game.seasonType === "REG";
     });
     const postSeason = jsonRes.gameSchedules.filter((game) => {
-      return game.seasonType === "POST" || game.seasonType === "PRO";
+      return game.seasonType === "POST";
     });
     const regSeasonGames = regularSeason.map((game) => {
       return {
@@ -85,9 +85,7 @@ function Picks() {
       setActiveWeek(newActiveWeek);
     }
   };
-  useEffect(() => {
-    console.log("active week", activeWeek);
-  }, [activeWeek]);
+
 
   const renderWeekButtons = weeks.map((week) => {
     return (
@@ -111,7 +109,7 @@ function Picks() {
         onClick={getWeek}
         type="button"
       >
-        Week {week}
+        {week}
       </button>
     );
   });

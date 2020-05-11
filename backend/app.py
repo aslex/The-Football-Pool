@@ -18,7 +18,7 @@ app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "localhost:3000"}})
 
 setup_db(app)
-# CORS(app)
+CORS(app)
 drop_and_create_all()
 
 @app.errorhandler(HTTPException)
@@ -59,33 +59,30 @@ def get_current_scores():
 
 @app.route('/users/<id>', methods=['PATCH'])
 @requires_auth_permission(permission='post:picks')
-def update_nickname(payload, id, permission='post:picks'):
+def update_nickname(payload, id):
     print(f'id ? {id}')
     print(f'permissions ?', {permission})
     print(f'payload ? {payload}')
-
     user = User.query.filter_by(id = payload.sub.id)
     if not user:
         abort(404)
-    else:
-        try:
-            user.update()
-
-        except:
-
+    # else:
+    #     try:
+    #         user.update()
+    #     except:
     return json.dumps({'message':'nickname has been updated' })
 
-@app.route('/picks', methods=['GET', 'POST', 'PATCH'])
-@requires_auth_permission('post:picks')
-def submit_picks(permission):
+@app.route('/picks/<week>', methods=['GET', 'POST', 'PATCH'])
+@requires_auth_permission(permission='post:picks')
+def submit_picks(payload, week):
     # unpack request header
     # token = get_token_auth_header()
     # payload = verify_decode_jwt(token)
-
+    print('week:', week)
     print('user : ', payload["sub"])
     if request.method == 'POST':
         print('save picks to db')
     elif request.method == 'GET':
         print('show submitted picks')
-    return 'submit your picks'
+    return 'ello'
 

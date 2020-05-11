@@ -25,8 +25,8 @@ def drop_and_create_all():
 
 class User(db.Model):
     __tablename__='users'
-    id = Column(Integer, primary_key=True)
-    nickname = Column(String, unique=True)
+    id = Column(Integer, primary_key=True, nullable=False)
+    nickname = Column(String, unique=True, nullable=False)
     
     totals = relationship('Total', backref='user')
     picks = relationship('Pick', backref='user')
@@ -36,6 +36,7 @@ class User(db.Model):
 
 class Total(db.Model):
     __tablename__= 'season totals'
+    id=Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
     season = Column(Integer)
     value = Column(Integer)
